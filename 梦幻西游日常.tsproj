@@ -2,3 +2,5 @@
 [lib]
 [file]
 main.lua
+utilfind.lua
+utils.lua

@@ -75,7 +75,7 @@ function doShimen()
 	while (hasShimen) do
 		local isFind = false;
 		mSleep(5000);
-		local shimenText = {"战斗界面","使用","购买","上交","兵器购买","兵器购买上交","选择要做师门1","选择要做师门2","选择要做师门3","选择要做师门4","送信对话框"};
+		local shimenText = {"战斗界面","使用","购买","上交","商会购买","兵器购买","兵器购买上交","选择要做师门1","选择要做师门2","选择要做师门3","选择要做师门4","送信对话框"};
 		local retTable;
 		for i,v in ipairs(shimenText) do
 			retTable = findUtil(v);
@@ -85,14 +85,16 @@ function doShimen()
 				-- 因为这两个按钮还有下一次点击（上交），所以这里就算找到了也算没找到
 				if (v == "购买" or v == "兵器购买") then
 					isFind = false;
+				elseif (v == "商会购买") then
+					isFind = false;
 					-- 如果是战斗界面，那么给1分钟的战斗时间
 				elseif (v == "战斗界面") then
 					waitFight();
 					isFind = true;
 				else
-					isFind = true;
-					break;
-				end				
+					isFind = true;					
+				end
+				break;
 			end
 		end
 		if retTable == false then
@@ -120,15 +122,27 @@ function doShimen()
 		end
 	end
 end
-
+function findShimenEnd()
+	local ret = findUtil("师门结束");
+	if ret ~= false then
+		randomTap(ret[1],ret[2],5);
+		mSleep(2000);
+		hasShimen = false;
+	end
+end
 function startShime()
+	-- 有时候失败了，再次通过主程序进来的时候，要重置一下hasShimen
+	hasShimen = true;
 	while (true) do
 		toast("准备开始师门",2);	
+		dealUnusual();
+		findShimenEnd();
 		if hasShimen == false then
+			toast("二十次师门结束！",2);	
 			break;
 		else
 			testShimen();
 		end
-		mSleep(15000);
+		mSleep(3000);
 	end
 end
